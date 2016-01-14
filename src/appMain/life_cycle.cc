@@ -358,7 +358,10 @@ namespace {
         break;
       case SIGSEGV:
         LOG4CXX_DEBUG(logger_, "SIGSEGV signal has been caught");
-        exit(EXIT_FAILURE);
+#ifdef ENABLE_LOG
+        FLUSH_LOGGER();
+#endif
+        abort();
         break;
       default:
         LOG4CXX_DEBUG(logger_, "Unexpected signal has been caught");
@@ -378,7 +381,6 @@ void LifeCycle::Run() {
   // Now wait for any signal
   pause();
 }
-
 
 void LifeCycle::StopComponents() {
   LOG4CXX_AUTO_TRACE(logger_);
