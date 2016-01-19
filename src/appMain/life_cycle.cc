@@ -373,13 +373,9 @@ namespace {
 void LifeCycle::Run() {
   LOG4CXX_AUTO_TRACE(logger_);
   // First, register signal handlers
-  if(!::utils::SubscribeToInterruptSignal(&sig_handler) ||
-     !::utils::SubscribeToTerminateSignal(&sig_handler) ||
-     !::utils::SubscribeToFaultSignal(&sig_handler)) {
-    LOG4CXX_FATAL(logger_, "Subscribe to system signals error");
+  if (!utils::WaitTerminationSignals(&sig_handler)) {
+      LOG4CXX_WARN(logger_, "Fail to catch system signal!");
   }
-  // Now wait for any signal
-  pause();
 }
 
 void LifeCycle::StopComponents() {
