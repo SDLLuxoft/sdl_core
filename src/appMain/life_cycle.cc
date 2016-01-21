@@ -372,7 +372,8 @@ namespace {
 
 void LifeCycle::Run() {
   LOG4CXX_AUTO_TRACE(logger_);
-  // First, register signal handlers
+  // Register signal handlers and wait sys signals
+  // from another thread
   if (!utils::WaitTerminationSignals(&sig_handler)) {
       LOG4CXX_WARN(logger_, "Fail to catch system signal!");
   }
