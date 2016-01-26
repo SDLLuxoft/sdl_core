@@ -58,6 +58,7 @@ set (SOURCES
   ${TM_SRC_DIR}/tcp/tcp_device.cc
   ${TM_SRC_DIR}/tcp/tcp_socket_connection.cc
   ${TM_SRC_DIR}/tcp/tcp_connection_factory.cc
+  ${TM_SRC_DIR}/disconnect_failed_routine_task.cc
 )
 
 if (BUILD_AVAHI_SUPPORT)

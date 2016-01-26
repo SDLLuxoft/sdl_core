@@ -49,20 +49,23 @@
 #include "application_manager/resumption/resumption_data_db.h"
 #include "application_manager/resumption/resumption_data_json.h"
 
+#include "application_manager/tasks/application_resumption_on_timer_task.h"
+#include "application_manager/tasks/save_data_on_timer_task.h"
+
 namespace resumption {
 using namespace application_manager;
 
 CREATE_LOGGERPTR_GLOBAL(logger_, "Resumption")
 
 ResumeCtrl::ResumeCtrl()
-    : queue_lock_(false)
-    , restore_hmi_level_timer_(
-          "RsmCtrlRstore", this, &ResumeCtrl::ApplicationResumptiOnTimer)
-    , save_persistent_data_timer_(
-          "RsmCtrlPercist", this, &ResumeCtrl::SaveDataOnTimer, true)
-    , is_resumption_active_(false)
-    , is_data_saved_(false)
-    , launch_time_(time(NULL)) {}
+    : queue_lock_(false),
+      restore_hmi_level_timer_(
+          "RsmCtrlRstore", new timer::ApplicationResumptionOnTimerTask(this)),
+      save_persistent_data_timer_(
+          "RsmCtrlPercist", new timer::SaveDataOnTimerTask(this), true),
+      is_resumption_active_(false),
+      is_data_saved_(false),
+      launch_time_(time(NULL)) {}
 
 bool ResumeCtrl::Init() {
   using namespace profile;

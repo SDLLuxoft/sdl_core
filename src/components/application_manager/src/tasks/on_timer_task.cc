@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "application_manager/application_manager_impl.h"
+#include "application_manager/tasks/on_timer_task.h"
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+namespace timer {
+
+OnTimerTask::OnTimerTask(rc::RequestController* tracked_class)
+    : tracked_class_(tracked_class) {}
+
+void OnTimerTask::run() { tracked_class_->onTimer(); }
+}

@@ -96,6 +96,16 @@ namespace smart_objects = NsSmartDeviceLink::NsSmartObjects;
 namespace threads {
 class Thread;
 }
+
+namespace timer {
+class ClearTimerPoolTask;
+class CloseNaviAppTask;
+class EndNaviStreamingTask;
+class OnApplicationListUpdateTask;
+class OnTimerSendTTSGlobalPropertiesTask;
+class Timer;
+}
+
 class CommandNotificationImpl;
 
 namespace application_manager {
@@ -207,6 +217,11 @@ class ApplicationManagerImpl
 
   friend class ResumeCtrl;
   friend class CommandImpl;
+  friend class timer::ClearTimerPoolTask;
+  friend class timer::CloseNaviAppTask;
+  friend class timer::EndNaviStreamingTask;
+  friend class timer::OnApplicationListUpdateTask;
+  friend class timer::OnTimerSendTTSGlobalPropertiesTask;
 
  public:
   ~ApplicationManagerImpl();
@@ -1278,8 +1293,7 @@ class ApplicationManagerImpl
    */
   typedef std::map<uint32_t, std::pair<bool, bool>> NaviServiceStatusMap;
 
-  typedef SharedPtr<TimerThread<ApplicationManagerImpl>>
-      ApplicationManagerTimerPtr;
+  typedef SharedPtr<timer::Timer> ApplicationManagerTimerPtr;
 
   /**
    * @brief GetHashedAppID allows to obtain unique application id as a string.
@@ -1473,19 +1487,23 @@ class ApplicationManagerImpl
 #endif  // TIME_TESTER
 
   class ApplicationListUpdateTimer
-      : public timer::TimerThread<ApplicationManagerImpl> {
+      : public timer::Timer {
    public:
+<<<<<<< HEAD
     ApplicationListUpdateTimer(ApplicationManagerImpl* callee)
         : timer::TimerThread<ApplicationManagerImpl>(
               "AM ListUpdater",
               callee,
               &ApplicationManagerImpl::OnApplicationListUpdateTimer) {}
+=======
+    ApplicationListUpdateTimer(ApplicationManagerImpl* callee);
+>>>>>>> da74588... Integration Timer to ApplicationManager
   };
   typedef utils::SharedPtr<ApplicationListUpdateTimer>
       ApplicationListUpdateTimerSptr;
   ApplicationListUpdateTimerSptr application_list_update_timer_;
 
-  timer::TimerThread<ApplicationManagerImpl> tts_global_properties_timer_;
+  timer::Timer tts_global_properties_timer_;
 
   bool is_low_voltage_;
   volatile bool is_stopping_;

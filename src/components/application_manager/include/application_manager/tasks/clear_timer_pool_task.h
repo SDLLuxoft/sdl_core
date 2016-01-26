@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef SRC_COMPONENTS_APPLICATION_MANAGER_INCLUDE_APPLICATION_MANAGER_TASKS_CLEAR_TIMER_POOL_TASK_H_
+#define SRC_COMPONENTS_APPLICATION_MANAGER_INCLUDE_APPLICATION_MANAGER_TASKS_CLEAR_TIMER_POOL_TASK_H_
+
+#include "utils/timer_task.h"
+#include "utils/macro.h"
+
 #include "application_manager/application_manager_impl.h"
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+namespace timer {
+class ClearTimerPoolTask : public TimerTask {
+ public:
+  explicit ClearTimerPoolTask(
+      application_manager::ApplicationManagerImpl* tracked_class);
+  void run() OVERRIDE;
+
+ private:
+  application_manager::ApplicationManagerImpl* tracked_class_;
+};
+}  // namespace timer
+
+#endif  // SRC_COMPONENTS_APPLICATION_MANAGER_INCLUDE_APPLICATION_MANAGER_TASKS_CLEAR_TIMER_POOL_TASK_H_

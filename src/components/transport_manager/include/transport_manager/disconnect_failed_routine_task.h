@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "application_manager/application_manager_impl.h"
+#ifndef SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TASKS_
+#define SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TASKS_
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+#include "utils/timer_task.h"
+#include "utils/macro.h"
+
+#include "transport_manager/transport_manager_impl.h"
+
+namespace timer {
+class DisconnectFailedRoutineTask : public TimerTask {
+ public:
+  DisconnectFailedRoutineTask(
+      transport_manager::TransportManagerImpl::ConnectionInternal*
+          tracked_class);
+  void run() OVERRIDE;
+
+ private:
+  transport_manager::TransportManagerImpl::ConnectionInternal* tracked_class_;
+};
+}
+
+#endif  // SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TASKS_

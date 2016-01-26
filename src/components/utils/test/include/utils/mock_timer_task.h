@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "application_manager/application_manager_impl.h"
+#ifndef SRC_COMPONENTS_UTILS_TEST_INCLUDE_UTILS_MOCK_TIMER_TASK_H_
+#define SRC_COMPONENTS_UTILS_TEST_INCLUDE_UTILS_MOCK_TIMER_TASK_H_
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+#include "gmock/gmock.h"
+#include "utils/timer_task.h"
+
+namespace test {
+namespace components {
+namespace timer_test {
+
+class MockTimerTask : public timer::TimerTask {
+ public:
+  MOCK_METHOD0(run,
+      void());
+};
+
+}  // namespace timer_test
+}  // namespace components
+}  // namespace test
+
+#endif  // SRC_COMPONENTS_UTILS_TEST_INCLUDE_UTILS_MOCK_TIMER_TASK_H_

@@ -46,7 +46,7 @@
 #include "protocol_handler/protocol_handler.h"
 
 #include "connection_handler/device.h"
-#include "utils/timer_thread.h"
+#include "utils/timer.h"
 #include "utils/lock.h"
 #include "utils/atomic_object.h"
 #include "utils/custom_string.h"
@@ -55,6 +55,12 @@ namespace usage_statistics {
 
 class StatisticsManager;
 }  // namespace usage_statistics
+
+namespace timer  {
+class AudioStreamSuspendTask;
+class VideoStreamSuspendTask;
+class Timer;
+}
 
 namespace application_manager {
 using namespace utils;
@@ -65,6 +71,11 @@ namespace custom_str = custom_string;
 
 class ApplicationImpl : public virtual InitialApplicationDataImpl,
                         public virtual DynamicApplicationDataImpl {
+    public virtual DynamicApplicationDataImpl {
+
+  friend class timer::AudioStreamSuspendTask;
+  friend class timer::VideoStreamSuspendTask;
+
  public:
   ApplicationImpl(
       uint32_t application_id,
@@ -287,7 +298,7 @@ class ApplicationImpl : public virtual InitialApplicationDataImpl,
   void CleanupFiles();
 
  private:
-  typedef SharedPtr<TimerThread<ApplicationImpl>> ApplicationTimerPtr;
+  typedef SharedPtr<Timer> ApplicationTimerPtr;
 
   /**
    * @brief Callback for video streaming suspend timer.

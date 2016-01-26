@@ -81,6 +81,7 @@
 #include "utils/lock.h"
 #include "utils/singleton.h"
 #include "utils/data_accessor.h"
+#include "utils/timer.h"
 
 namespace application_manager {
 enum VRTTSSessionChanging { kVRSessionChanging = 0, kTTSSessionChanging };
@@ -406,7 +407,7 @@ class ApplicationManagerImpl
   friend class ApplicationListAccessor;
 
   class ApplicationListUpdateTimer
-      : public timer::TimerThread<ApplicationManagerImpl> {
+      : public timer::Timer {
    public:
     ApplicationListUpdateTimer(ApplicationManagerImpl* callee)
         : timer::TimerThread<ApplicationManagerImpl>(

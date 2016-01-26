@@ -50,6 +50,9 @@
 #include "transport_manager/transport_adapter/transport_adapter_event.h"
 #include "config_profile/profile.h"
 
+#include "utils/timer.h"
+#include "transport_manager/disconnect_failed_routine_task.h"
+
 using ::transport_manager::transport_adapter::TransportAdapter;
 
 namespace transport_manager {
@@ -858,8 +861,8 @@ TransportManagerImpl::ConnectionInternal::ConnectionInternal(
   const DeviceHandle& device_handle)
   : transport_manager(transport_manager),
     transport_adapter(transport_adapter),
-    timer(new TimerInternal("TM DiscRoutine", this,
-                            &ConnectionInternal::DisconnectFailedRoutine)),
+    timer(new TimerInternal(
+            "TM DiscRoutine", new timer::DisconnectFailedRoutineTask(this))),
     shutDown(false),
     device_handle_(device_handle),
     messages_count(0) {

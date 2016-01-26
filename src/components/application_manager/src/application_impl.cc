@@ -42,6 +42,9 @@
 #include "utils/logger.h"
 #include "utils/gen_hash.h"
 
+#include "application_manager/tasks/video_stream_suspend_task.h"
+#include "application_manager/tasks/audio_stream_suspend_task.h"
+
 namespace {
 
 mobile_apis::FileType::eType StringToFileType(const char* str) {
@@ -131,18 +134,10 @@ ApplicationImpl::ApplicationImpl(
   audio_stream_suspend_timeout_ =
       profile::Profile::instance()->audio_data_stopped_timeout();
 
-  video_stream_suspend_timer_ =
-      ApplicationTimerPtr(new timer::TimerThread<ApplicationImpl>(
-          "VideoStreamSuspend",
-          this,
-          &ApplicationImpl::OnVideoStreamSuspend,
-          true));
-  audio_stream_suspend_timer_ =
-      ApplicationTimerPtr(new timer::TimerThread<ApplicationImpl>(
-          "AudioStreamSuspend",
-          this,
-          &ApplicationImpl::OnAudioStreamSuspend,
-          true));
+  video_stream_suspend_timer_ = ApplicationTimerPtr(new timer::Timer(
+      "VideoStreamSuspend", new ::timer::VideoStreamSuspendTask(this), true));
+  audio_stream_suspend_timer_ = ApplicationTimerPtr(new timer::Timer(
+      "AudioStreamSuspend", new ::timer::AudioStreamSuspendTask(this), true));
 }
 
 ApplicationImpl::~ApplicationImpl() {

@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "application_manager/application_manager_impl.h"
+#include "application_manager/tasks/video_stream_suspend_task.h"
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+namespace timer {
+
+VideoStreamSuspendTask::VideoStreamSuspendTask(
+    application_manager::ApplicationImpl* tracked_class)
+    : tracked_class_(tracked_class) {}
+
+void VideoStreamSuspendTask::run() { tracked_class_->OnVideoStreamSuspend(); }
+}

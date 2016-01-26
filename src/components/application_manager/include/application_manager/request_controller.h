@@ -47,8 +47,12 @@
 #include "interfaces/HMI_API.h"
 
 #include "application_manager/request_info.h"
-#include "utils/timer_thread.h"
+#include "utils/timer.h"
 
+
+namespace timer {
+class OnTimerTask;
+}
 
 namespace application_manager {
 
@@ -59,6 +63,9 @@ namespace request_controller {
 * requests.
 */
 class RequestController {
+
+  friend class timer::OnTimerTask;
+
   public:
     /**
     * @brief Result code for addRequest
@@ -281,7 +288,7 @@ class RequestController {
     /*
      * timer for checking requests timeout
      */
-    timer::TimerThread<RequestController> timer_;
+    timer::Timer timer_;
     static const uint32_t default_sleep_time_ = UINT_MAX;
 
     bool is_low_voltage_;

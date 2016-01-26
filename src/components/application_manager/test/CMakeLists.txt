@@ -43,6 +43,7 @@ if (BUILD_TESTS)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mock/include/application_manager/policies)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mock/include/application_manager/policies/delegates)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mock/include/application_manager/resumption)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mock/include/application_manager/tasks)
 
   file (GLOB_RECURSE AMINCLUDE_TO_BE_MOCKED
     ${AM_SOURCE_DIR}/include/application_manager/*

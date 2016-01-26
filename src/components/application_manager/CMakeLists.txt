@@ -77,6 +77,9 @@ file (GLOB SOURCES
 
 set (MESSAGE_HELPER_SOURCES
   ${AM_SOURCE_DIR}/src/message_helper/message_helper.cc
+
+file (GLOB TASKS
+  ${AM_SOURCE_DIR}/src/tasks/*
 )
 
 set (POLICIES_MANAGER
@@ -378,7 +381,7 @@ add_library("MessageHelper" ${MESSAGE_HELPER_SOURCES})
 add_library("AMMobileCommandsLibrary" ${MOBILE_COMMANDS_SOURCES} )
 target_link_libraries("AMMobileCommandsLibrary" ${LIBRARIES} AMEventEngine)
 
-add_library("ApplicationManager" ${SOURCES} ${RESUMPTION})
+add_library("ApplicationManager" ${SOURCES} ${RESUMPTION} ${TASKS})
 target_link_libraries("ApplicationManager" ${LIBRARIES} AMHMICommandsLibrary
                                                         AMMobileCommandsLibrary
                                                         AMEventEngine

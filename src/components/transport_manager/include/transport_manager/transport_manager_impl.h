@@ -40,7 +40,6 @@
 #include <utility>
 #include <algorithm>
 
-#include "utils/timer_thread.h"
 #include "utils/rwlock.h"
 
 #include "transport_manager/transport_manager.h"
@@ -52,6 +51,11 @@
 #endif  // TIME_TESTER
 #include "utils/threads/message_loop_thread.h"
 #include "transport_manager/transport_adapter/transport_adapter_event.h"
+
+namespace timer {
+  class DisconnectFailedRoutineTask;
+  class Timer;
+}
 
 namespace transport_manager {
 
@@ -74,13 +78,14 @@ class TransportManagerImpl : public TransportManager,
   };
 
  private:
+  friend class timer::DisconnectFailedRoutineTask;
   /**
    * @brief Structure that contains internal connection parameters
    */
   struct ConnectionInternal: public Connection {
     TransportManagerImpl* transport_manager;
     TransportAdapter* transport_adapter;
-    typedef timer::TimerThread<ConnectionInternal> TimerInternal;
+    typedef timer::Timer TimerInternal;
     typedef utils::SharedPtr<TimerInternal> TimerInternalSharedPointer;
     TimerInternalSharedPointer timer;
     bool shutDown;

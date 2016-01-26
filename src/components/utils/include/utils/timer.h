@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2014, Ford Motor Company
+/*
+ * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,68 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "application_manager/application_manager_impl.h"
+#ifndef SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TIMER_H_
+#define SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TIMER_H_
 
-ApplicationManagerImpl::ApplicationListUpdateTimer::ApplicationListUpdateTimer(
-    ApplicationManagerImpl* callee)
-  : timer::Timer("AM ListUpdater", new OnApplicationListUpdateTask(callee)) {}
+#include <stdint.h>
+#include <string>
+#include <signal.h>
+#include <time.h>
+
+#include "utils/lock.h"
+#include "utils/timer_task.h"
+#include "utils/shared_ptr.h"
+
+namespace timer {
+
+CREATE_LOGGERPTR_GLOBAL(logger_, "Utils")
+
+class Timer {
+ public:
+  Timer(const std::string& name, utils::SharedPtr<TimerTask> task_for_tracking,
+        bool is_looper = false);
+
+  virtual ~Timer();
+
+  virtual void start(const uint32_t time_out);
+
+  virtual void stop();
+
+  virtual void suspend();
+
+  virtual bool isRunning();
+
+  virtual void updateTimeOut(const uint32_t new_time_out);
+
+  // getters
+  uint32_t getTimeOut();
+  const std::string& getTimerName();
+  bool isLooper();
+  const utils::SharedPtr<TimerTask> getTrackedTask();
+
+ protected:
+  virtual void restart(const uint32_t new_time_out);
+
+  virtual void onTimeOut();
+
+ private:
+  void set_time_out(const uint32_t new_time_out);
+
+  void startPosixTimer();
+
+  void destructPosixTimer();
+
+  const std::string timer_name_;
+  utils::SharedPtr<TimerTask> tracked_task_;
+  uint32_t time_out_miliseconds_;
+  bool is_loop_;
+  bool is_running_;
+  bool is_must_be_stoped;
+  timer_t posix_timer_;
+  sigevent signal_event_;
+
+  friend void handler_wrapper(sigval_t val);
+};
+}  // namespace timer
+
+#endif  // SRC_COMPONENTS_UTILS_INCLUDE_UTILS_TIMER_H_

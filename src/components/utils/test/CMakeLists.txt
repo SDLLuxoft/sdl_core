@@ -41,6 +41,7 @@ include_directories (
 )
 
 set(testSources
+  src/mock_object.cc
   messagemeter_test.cc
   file_system_test.cc
   date_time_test.cc
@@ -65,6 +66,7 @@ set(testSources
   atomic_object_test.cc
   message_loop_thread_test.cc
   custom_string_test.cc
+  timer_test.cc
 )
 
 set(testLibraries

@@ -61,6 +61,13 @@
 #include "usage_statistics/counter.h"
 #include <time.h>
 
+#include "utils/timer.h"
+#include "application_manager/tasks/close_navi_app_task.h"
+#include "application_manager/tasks/clear_timer_pool_task.h"
+#include "application_manager/tasks/end_navi_streaming_task.h"
+#include "application_manager/tasks/on_application_list_update_timer_task.h"
+#include "application_manager/tasks/on_timer_send_tts_global_properties_task.h"
+
 namespace {
 int get_rand_from_range(uint32_t from = 0, int to = RAND_MAX) {
   return std::rand() % to + from;
@@ -123,15 +130,12 @@ ApplicationManagerImpl::ApplicationManagerImpl()
     metric_observer_(NULL)
     ,
 #endif  // TIME_TESTER
-    application_list_update_timer_(new ApplicationListUpdateTimer(this))
-    , tts_global_properties_timer_(
-          "TTSGLPRTimer",
-          this,
-          &ApplicationManagerImpl::OnTimerSendTTSGlobalProperties,
-          true)
-    , is_low_voltage_(false)
-    , is_stopping_(false) {
-
+      application_list_update_timer_(new ApplicationListUpdateTimer(this)),
+      tts_global_properties_timer_(
+          "TTSGLPRTimer", new timer::OnTimerSendTTSGlobalPropertiesTask(this),
+          true),
+      is_low_voltage_(false),
+      is_stopping_(false) {
   std::srand(std::time(0));
   AddPolicyObserver(this);
 
@@ -140,12 +144,8 @@ ApplicationManagerImpl::ApplicationManagerImpl()
                              {TYPE_ICONS, "Icons"}};
 
   sync_primitives::AutoLock lock(timer_pool_lock_);
-  ApplicationManagerTimerPtr clearTimerPoolTimer(
-      new TimerThread<ApplicationManagerImpl>(
-          "ClearTimerPoolTimer",
-          this,
-          &ApplicationManagerImpl::ClearTimerPool,
-          true));
+  ApplicationManagerTimerPtr clearTimerPoolTimer(new Timer(
+      "ClearTimerPoolTimer", new timer::ClearTimerPoolTask(this), true));
   const uint32_t timeout_ms = 10000;
   clearTimerPoolTimer->start(timeout_ms);
   timer_pool_.push_back(clearTimerPoolTimer);

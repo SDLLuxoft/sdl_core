@@ -37,6 +37,7 @@
 #include "application_manager/commands/hmi/request_to_hmi.h"
 #include "utils/make_shared.h"
 
+#include "application_manager/tasks/on_timer_task.h"
 namespace application_manager {
 
 namespace request_controller {
@@ -48,7 +49,7 @@ CREATE_LOGGERPTR_GLOBAL(logger_, "RequestController")
 RequestController::RequestController()
   : pool_state_(UNDEFINED),
     pool_size_(profile::Profile::instance()->thread_pool_size()),
-    timer_("RequestCtrlTimer", this, &RequestController::onTimer, true),
+    timer_("RequestCtrlTimer", new timer::OnTimerTask(this), true),
     is_low_voltage_(false) {
   LOG4CXX_AUTO_TRACE(logger_);
   InitializeThreadpool();

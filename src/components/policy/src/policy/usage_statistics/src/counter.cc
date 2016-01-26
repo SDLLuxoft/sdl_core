@@ -36,6 +36,7 @@
 #include <cassert>
 #include "usage_statistics/counter.h"
 #include "utils/date_time.h"
+#include "policy/usage_statistics/write_time_task.h"
 
 namespace usage_statistics {
 
@@ -84,7 +85,7 @@ AppStopwatch::AppStopwatch(utils::SharedPtr<usage_statistics::StatisticsManager>
     : app_id_(app_id),
       stopwatch_type_(SECONDS_HMI_NONE),
       statistics_manager_(statistics_manager),
-      timer_(new Timer("HMI levels timer",this, &AppStopwatch::WriteTime, true)),
+      timer_(new Timer("HMI levels timer",new timer::WriteTimeTask(this), true)),
       time_out_(60) {
 }
 
@@ -94,7 +95,7 @@ AppStopwatch::AppStopwatch(utils::SharedPtr<StatisticsManager> statistics_manage
   : app_id_(app_id),
     stopwatch_type_(SECONDS_HMI_NONE),
     statistics_manager_(statistics_manager),
-    timer_(new Timer("HMI levels timer",this, &AppStopwatch::WriteTime, true)),
+    timer_(new Timer("HMI levels timer",new timer::WriteTimeTask(this), true)),
     time_out_(time_out) {
 
 }
